@@ -4,3 +4,18 @@
           foi feito no arquivo pom.xml. Posso ver as dependências em: https://mvnrepository.com/
         1.2.1.  Obs: Não foi necessário informar as versões na dependency nem no build, pois eles vão herdar do parent
     1.3.  Criar a classe VendasApplication, para poder inicializar o programa
+2.  Arquivos Configuration e Bean
+    2.1.  O SB permite que eu crie arquivos (classes) de configuração para que eu possa reutilizar no meu código. Vide
+          exemplo no arquivo MinhaConfiguration
+3.  O spring trabalha com o conceito de containers e IOC (inversion of control). Resumidamente, ele lê as notations
+    (@Configuration, @Bean, @Component, @Repository, etc), escaneia elas e carrega dentro do container. Em linhas gerais
+    o SB faz a gestão disso e nós não precisamos ficar injetando manualmente as classes.
+4.  Injeção de dependência. Inj. de dependência é um padrão de projeto, onde eu delego a outras classes (ou a um container),
+    que instancia minhas classes e injete nas classes onde eu preciso
+    4.1.  Service é a classe onde colocamos as regras de negócio
+    4.2.  Repository que é o objeto que acessa a base de dados e as persiste
+        4.2.1.  @Repository: Graças a esta anotação, o SB sabe que ele precisa scanear esta classe, fazer a conexão com o BD,
+                cria uma instancia (Singleton) e carregar no container de injeções
+    4.3.  Para fazer a injeção, só preciso fazer a anotação @Autowired, na classe onde quero injetar a dependência
+#DICA: para criar uma classe, já com a package, basta colocar o nomeDaPackage.nomeDaClasse, quando estiver criando uma nova
+classe!
