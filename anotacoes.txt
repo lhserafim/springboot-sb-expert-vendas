@@ -7,7 +7,7 @@
 2.  Arquivos Configuration e Bean
     2.1.  O SB permite que eu crie arquivos (classes) de configuração para que eu possa reutilizar no meu código. Vide
           exemplo no arquivo MinhaConfiguration
-3.  O spring trabalha com o conceito de containers e IOC (inversion of control). Resumidamente, ele lê as notations
+3.  O spring trabalha com o conceito de containers e IOC (inversion of control). Resumidamente, ele lê as annotations
     (@Configuration, @Bean, @Component, @Repository, etc), escaneia elas e carrega dentro do container. Em linhas gerais
     o SB faz a gestão disso e nós não precisamos ficar injetando manualmente as classes.
 4.  Injeção de dependência. Inj. de dependência é um padrão de projeto, onde eu delego a outras classes (ou a um container),
@@ -19,3 +19,40 @@
     4.3.  Para fazer a injeção, só preciso fazer a anotação @Autowired, na classe onde quero injetar a dependência
 #DICA: para criar uma classe, já com a package, basta colocar o nomeDaPackage.nomeDaClasse, quando estiver criando uma nova
 classe!
+5.  Como fazer configurações personalizadas no SB. Para mais informações: https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html
+    5.1.  Dentro da pasta resources, criar um arquivo application.properties. Este arquivo trabalha com o conceito de chave = valor
+          Ex.:
+          application.testeArquivoProperties = Teste Executado Com Sucesso
+    5.2.  O SB também escaneia este arquivo e eu posso injetar os valores através da annotation @Values("${nomeDaPropriedade}")
+          Ex.:
+          @Value("${application.testeArquivoProperties}")
+    5.3.  Configurações através de perfis. Como trabalhar como diversos ambientes no SB
+        5.3.1.  Para criar um arquivo de propriedades personalizado, para cada ambiente, eu preciso criar um novo arquivo dentro
+                do meu diretório resources, com o seguinte padrão application-nomeDoAmbiente.properties (isto é uma convenção)
+            5.3.1.1.  Dentro deste aqruivo, eu faço as configurações necessárias, como parametrizar a conexão com o BD ou setar o nome da aplicação
+        5.3.2.  No arquivo "parent", eu faço o apontamento para o PERFIL ATIVO, conforme exemplo:
+                Ex.: (repare que eu só uso o que está depois de application-
+                spring.profiles.active=production
+    5.4.  Com o uso de profiles, eu posso criar uma classe de configuração e definir através da annotation @Profile, que aquela
+          classe de configuração SÓ será usada naquele profile
+          Ex.:
+          @Configuration
+          @Profile("development")
+          public class minhaClasseConfiguration {
+            ...
+          }
+#DICA: A interface funcional CommandLineRunner(), é similar ao ngOnInit(), ou seja, ela é executada ao iniciar o ambiente.
+Ela tem um único método run().
+6.  Criando annotations personalizadas. Annotations personalizadas podem nos ajudar a simplificar algumas coisas que fazemos
+    de forma repetitiva
+    6.1.  Criando uma annotation para para carregar o @Profile de desenvolvimento
+        6.1.1.  Criar uma classe do tipo annotation
+        6.1.2.  Como a finalidade desta classe é carregar o profile de desenvolvimento, adicionar as annotations
+                Ex.:
+                // Annotations que fazem parte do criar uma annotation
+                @Target(ElementType.TYPE) // Só permite que seja usado em classes
+                @Retention(RetentionPolicy.RUNTIME)
+                // Annotations usadas p/ fazer o configuration que vai carregar o profile de development
+                @Configuration
+                @Profile("development")
+
